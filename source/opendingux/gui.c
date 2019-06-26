@@ -1,7 +1,7 @@
 /* ReGBA - In-application menu
  *
  * Copyright (C) 2013 Dingoonity user Nebuleon
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public Licens e as
  * published by the Free Software Foundation; either version 2 of
@@ -919,7 +919,7 @@ static void ActionSavedStateWrite(struct Menu** ActiveMenu, uint32_t* ActiveMenu
 		if (!GrabYesOrNo(*ActiveMenu, Temp))
 			return;
 	}
-	
+
 	// 2. If the file didn't exist or the user wanted to overwrite it, save.
 	uint32_t ret = save_state(SelectedState, CurrentScreen /* preserved screenshot */);
 	if (ret != 1)
@@ -946,7 +946,7 @@ static void ActionSavedStateDelete(struct Menu** ActiveMenu, uint32_t* ActiveMen
 	sprintf(Temp, "Delete saved state #%" PRIu32 "?\n[A] = Yes  Others = No", SelectedState + 1);
 	if (!GrabYesOrNo(*ActiveMenu, Temp))
 		return;
-	
+
 	// 2. If the user wants to, delete the saved state.
 	if (remove(SavedStateFilename) != 0)
 	{
@@ -1572,14 +1572,14 @@ u32 ReGBA_Menu(enum ReGBA_MenuEntryReason EntryReason)
 		(*DisplayDataFunction)(ActiveMenu, ActiveMenu->Entries[ActiveMenu->ActiveEntryIndex]);
 
 		ReGBA_VideoFlip();
-		
+
 		// Wait. (This is for platforms on which flips don't wait for vertical
 		// sync.)
 		usleep(5000);
 
 		// Get input.
 		enum GUI_Action Action = GetGUIAction();
-		
+
 		switch (Action)
 		{
 			case GUI_ACTION_ENTER:

@@ -242,7 +242,7 @@ void ProcessSpecialKeys()
 		SetGameResolution();
 	}
 	WasLoadStateHeld = IsLoadStateHeld;
-	
+
 	enum OpenDingux_Buttons SaveState = ResolveButtons(Hotkeys[4], PerGameHotkeys[4]);
 	bool IsSaveStateHeld = SaveState != 0 && (SaveState & ButtonCopy) == SaveState;
 	if (!WasSaveStateHeld && IsSaveStateHeld)
