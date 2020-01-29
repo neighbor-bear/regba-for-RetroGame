@@ -1287,22 +1287,22 @@ static struct MenuEntry InputMenu_RapidB = {
 	ENTRY_OPTIONAL_MAPPING
 };
 
-#if defined(GCW_ZERO) && !defined(RETROGAME)
+#if defined(GCW_ZERO)
 static struct MenuEntry PerGameInputMenu_AnalogSensitivity = {
-	ENTRY_OPTION("analog_sensitivity", "Analog sensitivity", &PerGameAnalogSensitivity),
+	ENTRY_OPTION("analog_sensitivity", "Analog Threshold", &PerGameAnalogSensitivity),
 	.ChoiceCount = 6, .Choices = { { "No override", "" }, { "Very low", "lowest" }, { "Low", "low" }, { "Medium", "medium" }, { "High", "high" }, { "Very high", "highest" } }
 };
 static struct MenuEntry InputMenu_AnalogSensitivity = {
-	ENTRY_OPTION("analog_sensitivity", "Analog sensitivity", &AnalogSensitivity),
+	ENTRY_OPTION("analog_sensitivity", "Analog Threshold", &AnalogSensitivity),
 	.ChoiceCount = 5, .Choices = { { "Very low", "lowest" }, { "Low", "low" }, { "Medium", "medium" }, { "High", "high" }, { "Very high", "highest" } }
 };
 
 static struct MenuEntry PerGameInputMenu_AnalogAction = {
-	ENTRY_OPTION("analog_action", "Analog in-game binding", &PerGameAnalogAction),
-	.ChoiceCount = 3, .Choices = { { "No override", "" }, { "None", "none" }, { "GBA D-pad", "dpad" } }
+	ENTRY_OPTION("analog_action", "Joystick in-game", &PerGameAnalogAction),
+	.ChoiceCount = 3, .Choices = { { "None", "none" }, { "No override", "" }, { "GBA D-pad", "dpad" } }
 };
 static struct MenuEntry InputMenu_AnalogAction = {
-	ENTRY_OPTION("analog_action", "Analog in-game binding", &AnalogAction),
+	ENTRY_OPTION("analog_action", "Joystick in-game", &AnalogAction),
 	.ChoiceCount = 2, .Choices = { { "None", "none" }, { "GBA D-pad", "dpad" } }
 };
 #endif
@@ -1312,8 +1312,8 @@ static struct Menu PerGameInputMenu = {
 	MENU_PER_GAME,
 	.AlternateVersion = &InputMenu,
 	.Entries = { &PerGameInputMenu_A, &PerGameInputMenu_B, &PerGameInputMenu_L, &PerGameInputMenu_R, &PerGameInputMenu_Start, &PerGameInputMenu_Select, &PerGameInputMenu_RapidA, &PerGameInputMenu_RapidB
-#if defined(GCW_ZERO) && !defined(RETROGAME)
-	, &Strut, &PerGameInputMenu_AnalogSensitivity, &PerGameInputMenu_AnalogAction
+#if defined(GCW_ZERO)
+	, &Strut, /*&PerGameInputMenu_AnalogAction,*/ &PerGameInputMenu_AnalogSensitivity
 #endif
 	, NULL }
 };
@@ -1321,8 +1321,8 @@ static struct Menu InputMenu = {
 	.Parent = &SettingsMenu, .Title = "Input settings",
 	.AlternateVersion = &PerGameInputMenu,
 	.Entries = { &InputMenu_A, &InputMenu_B, &InputMenu_L, &InputMenu_R, &InputMenu_Start, &InputMenu_Select, &InputMenu_RapidA, &InputMenu_RapidB
-#if defined(GCW_ZERO) && !defined(RETROGAME)
-	, &Strut, &InputMenu_AnalogSensitivity, &InputMenu_AnalogAction
+#if defined(GCW_ZERO)
+	, &Strut, /*&InputMenu_AnalogAction,*/ &InputMenu_AnalogSensitivity
 #endif
 	, NULL }
 };

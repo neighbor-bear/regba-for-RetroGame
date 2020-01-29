@@ -19,6 +19,22 @@
 
 #include "common.h"
 
+#define	BUTTON_UP		SDLK_UP			// Up
+#define	BUTTON_DOWN		SDLK_DOWN		// Down
+#define	BUTTON_LEFT		SDLK_LEFT		// Left
+#define	BUTTON_RIGHT	SDLK_RIGHT		// Right
+#define	BUTTON_START	SDLK_RETURN		// Start
+#define	BUTTON_SELECT	SDLK_ESCAPE		// Select
+#define	BUTTON_A		SDLK_LCTRL		// Right face button (A)
+#define	BUTTON_B		SDLK_LALT		// Lower face button (B)
+#define	BUTTON_X		SDLK_SPACE		// Upper face button (GCW Y, A320 X)
+#define	BUTTON_Y		SDLK_LSHIFT		// Left face button (GCW X, A320 Y)
+#define	BUTTON_L		SDLK_TAB		// L
+#define	BUTTON_R		SDLK_BACKSPACE	// R
+#define	BUTTON_L2		SDLK_TAB		// L2
+#define	BUTTON_R2		SDLK_BACKSPACE	// R2
+#define	BUTTON_MENU		SDLK_END		// POWER
+
 uint_fast8_t FastForwardFrameskip = 0;
 
 uint32_t PerGameFastForwardTarget = 0;
@@ -27,14 +43,14 @@ uint32_t FastForwardTarget = 4; // 6x by default
 uint32_t PerGameAnalogSensitivity = 0;
 uint32_t AnalogSensitivity = 0; // require 32256/32767 of the axis by default
 
-uint32_t PerGameAnalogAction = 0;
-uint32_t AnalogAction = 0;
+uint32_t PerGameAnalogAction = 1;
+uint32_t AnalogAction = 1;
 
 uint32_t HotkeyOpenMenu = 0;
 
 uint_fast8_t FastForwardFrameskipControl = 0;
 
-//static SDL_Joystick* Joystick;
+static SDL_Joystick* Joystick;
 
 static bool JoystickInitialised = false;
 
@@ -42,23 +58,23 @@ static bool JoystickInitialised = false;
 // key on the keyboard, but not all keys on the keyboard map to these.
 // They are not in GBA bitfield order in this array.
 uint32_t OpenDinguxKeys[OPENDINGUX_BUTTON_COUNT] = {
-	SDLK_TAB,        // L
-	SDLK_BACKSPACE,  // R
-	SDLK_DOWN,       // Down
-	SDLK_UP,         // Up
-	SDLK_LEFT,       // Left
-	SDLK_RIGHT,      // Right
-	SDLK_RETURN,     // Start
-	SDLK_ESCAPE,     // Select
-	SDLK_LALT,       // Lower face button (B)
-	SDLK_LCTRL,      // Right face button (A)
-	SDLK_LSHIFT,     // Left face button (GCW X, A320 Y)
-	SDLK_SPACE,      // Upper face button (GCW Y, A320 X)
+	BUTTON_L,		// L
+	BUTTON_R,		// R
+	BUTTON_DOWN,	// Down
+	BUTTON_UP,		// Up
+	BUTTON_LEFT,	// Left
+	BUTTON_RIGHT,	// Right
+	BUTTON_START,	// Start
+	BUTTON_SELECT,	// Select
+	BUTTON_B,		// Lower face button (B)
+	BUTTON_A,		// Right face button (A)
+	BUTTON_Y,		// Left face button (GCW X, A320 Y)
+	BUTTON_X,		// Upper face button (GCW Y, A320 X)
 	0,
 	0,
 	0,
 	0,
-	SDLK_END,       // GCW: Quick flick of Power
+	BUTTON_MENU,    // GCW: Quick flick of Power
 };
 
 // These must be OpenDingux buttons at the bit suitable for the ReGBA_Buttons
@@ -149,6 +165,37 @@ enum GUI_Action MenuKeysToGUI[7] = {
 	GUI_ACTION_ALTERNATE,
 };
 
+static void EnsureJoystick()
+{
+	if (!JoystickInitialised)
+	{
+		JoystickInitialised = true;
+		Joystick = SDL_JoystickOpen(0);
+		if (Joystick == NULL)
+		{
+			ReGBA_Trace("I: Joystick #0 could not be opened");
+		}
+	}
+}
+
+int16_t GetHorizontalAxisValue()
+{
+	EnsureJoystick();
+	if (Joystick != NULL)
+		return SDL_JoystickGetAxis(Joystick, 0);
+	else
+		return 0;
+}
+
+int16_t GetVerticalAxisValue()
+{
+	EnsureJoystick();
+	if (Joystick != NULL)
+		return SDL_JoystickGetAxis(Joystick, 1);
+	else
+		return 0;
+}
+
 // CurButtons allows only one state change per button relative to LastButtons
 // during a frame.
 // FutureButtons alows any number of state changes per button.
@@ -161,8 +208,20 @@ static void UpdateOpenDinguxButtons()
 
 	while (SDL_PollEvent(&ev))
 	{
+		if (ev.type == SDL_JOYBUTTONDOWN || ev.type == SDL_JOYBUTTONUP) {
+			if (ev.jbutton.button == 0) ev.key.keysym.sym = BUTTON_X;
+			if (ev.jbutton.button == 1) ev.key.keysym.sym = BUTTON_A;
+			if (ev.jbutton.button == 2) ev.key.keysym.sym = BUTTON_B;
+			if (ev.jbutton.button == 3) ev.key.keysym.sym = BUTTON_Y;
+			if (ev.jbutton.button == 4) ev.key.keysym.sym = BUTTON_L;
+			if (ev.jbutton.button == 5) ev.key.keysym.sym = BUTTON_R;
+			if (ev.jbutton.button == 8) ev.key.keysym.sym = BUTTON_SELECT;
+			if (ev.jbutton.button == 9) ev.key.keysym.sym = BUTTON_START;
+		}
+
 		switch (ev.type)
 		{
+			case SDL_JOYBUTTONDOWN:
 			case SDL_KEYDOWN:
 				for (i = 0; i < sizeof(OpenDinguxKeys) / sizeof(OpenDinguxKeys[0]); i++)
 					if (ev.key.keysym.sym == OpenDinguxKeys[i])
@@ -173,6 +232,7 @@ static void UpdateOpenDinguxButtons()
 						break;
 					}
 				break;
+			case SDL_JOYBUTTONUP:
 			case SDL_KEYUP:
 				for (i = 0; i < sizeof(OpenDinguxKeys) / sizeof(OpenDinguxKeys[0]); i++)
 					if (ev.key.keysym.sym == OpenDinguxKeys[i])
@@ -286,7 +346,7 @@ enum ReGBA_Buttons ReGBA_GetPressedButtons()
 			Result |= 1 << (uint_fast16_t) i;
 		}
 	}
-	if (ResolveSetting(AnalogAction, PerGameAnalogAction) == 1)
+	// if (ResolveSetting(AnalogAction, PerGameAnalogAction) == 1)
 	{
 		if (LastButtons & OPENDINGUX_ANALOG_LEFT)  Result |= REGBA_BUTTON_LEFT;
 		if (LastButtons & OPENDINGUX_ANALOG_RIGHT) Result |= REGBA_BUTTON_RIGHT;
@@ -341,37 +401,6 @@ enum OpenDingux_Buttons GetPressedOpenDinguxButtons()
 	CurButtons = FutureButtons;
 
 	return LastButtons & ~OPENDINGUX_BUTTON_MENU;
-}
-
-static void EnsureJoystick()
-{
-	// if (!JoystickInitialised)
-	// {
-		// JoystickInitialised = true;
-		// Joystick = SDL_JoystickOpen(0);
-		// if (Joystick == NULL)
-		// {
-			// ReGBA_Trace("I: Joystick #0 could not be opened");
-		// }
-	// }
-}
-
-int16_t GetHorizontalAxisValue()
-{
-	// EnsureJoystick();
-	// if (Joystick != NULL)
-		// return SDL_JoystickGetAxis(Joystick, 0);
-	// else
-		return 0;
-}
-
-int16_t GetVerticalAxisValue()
-{
-	// EnsureJoystick();
-	// if (Joystick != NULL)
-		// return SDL_JoystickGetAxis(Joystick, 1);
-	// else
-		return 0;
 }
 
 enum GUI_ActionRepeatState
