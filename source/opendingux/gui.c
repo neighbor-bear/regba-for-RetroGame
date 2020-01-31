@@ -423,6 +423,10 @@ static char* OpenDinguxButtonText[OPENDINGUX_BUTTON_COUNT] = {
 	"Analog Up",
 	"Analog Left",
 	"Analog Right",
+	"L2",
+	"R2",
+	"L3",
+	"R3",
 };
 
 /*
@@ -590,6 +594,10 @@ static char OpenDinguxButtonSave[OPENDINGUX_BUTTON_COUNT] = {
 	'u',
 	'l',
 	'r', // (end)
+	'L2',
+	'R2',
+	'L3',
+	'R3',
 };
 
 static void LoadMappingFunction(struct MenuEntry* ActiveMenuEntry, char* Value)

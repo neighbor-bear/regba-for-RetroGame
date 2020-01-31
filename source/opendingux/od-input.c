@@ -31,8 +31,10 @@
 #define	BUTTON_Y		SDLK_LSHIFT		// Left face button (GCW X, A320 Y)
 #define	BUTTON_L		SDLK_TAB		// L
 #define	BUTTON_R		SDLK_BACKSPACE	// R
-#define	BUTTON_L2		SDLK_TAB		// L2
-#define	BUTTON_R2		SDLK_BACKSPACE	// R2
+#define	BUTTON_L2		SDLK_PAGEUP		// L2
+#define	BUTTON_R2		SDLK_PAGEDOWN	// R2
+#define	BUTTON_L3		SDLK_KP_DIVIDE	// L3
+#define	BUTTON_R3		SDLK_KP_PERIOD	// R3
 #define	BUTTON_MENU		SDLK_END		// POWER
 
 uint_fast8_t FastForwardFrameskip = 0;
@@ -74,6 +76,10 @@ uint32_t OpenDinguxKeys[OPENDINGUX_BUTTON_COUNT] = {
 	0,
 	0,
 	0,
+	BUTTON_L2,
+	BUTTON_R2,
+	BUTTON_L3,
+	BUTTON_R3,
 	BUTTON_MENU,    // GCW: Quick flick of Power
 };
 
