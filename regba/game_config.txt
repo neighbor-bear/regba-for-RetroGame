@@ -295,6 +295,13 @@ game_code = AXVF
 vender_code = 01
 flash_rom_type = 128KB
 
+# Pokemon: Ultraviolet
+game_name = ULTRA VIOLET
+game_code = PUVV
+vender_code = 01
+idle_loop_eliminate_target = 080008c6
+flash_rom_type = 128KB
+
 # V-Rally 3 (E)
 game_name = V-RALLY 3
 game_code = AVRP
