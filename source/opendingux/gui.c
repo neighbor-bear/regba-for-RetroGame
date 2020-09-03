@@ -348,16 +348,16 @@ static void DefaultDisplayDataFunction(struct Menu* ActiveMenu, struct MenuEntry
 static void DefaultDisplayTitleFunction(struct Menu* ActiveMenu)
 {
 	PrintStringOutline(ActiveMenu->Title, COLOR_TITLE_TEXT, COLOR_TITLE_OUTLINE, OutputSurface->pixels, OutputSurface->pitch, 0, 0, GCW0_SCREEN_WIDTH, GCW0_SCREEN_HEIGHT, CENTER, TOP);
+	PrintStringOutline("Press Select to change game settings", COLOR_TITLE_TEXT, COLOR_TITLE_OUTLINE, OutputSurface->pixels, OutputSurface->pitch, 0, 0, GCW0_SCREEN_WIDTH, GCW0_SCREEN_HEIGHT, CENTER, BOTTOM);
 }
 
 static void DisplayPerGameTitleFunction(struct Menu* ActiveMenu)
 {
-	PrintStringOutline(ActiveMenu->Title, COLOR_TITLE_TEXT, COLOR_TITLE_OUTLINE, OutputSurface->pixels, OutputSurface->pitch, 0, 0, GCW0_SCREEN_WIDTH, GCW0_SCREEN_HEIGHT, CENTER, TOP);
 	char ForGame[MAX_PATH * 2];
 	char FileNameNoExt[MAX_PATH + 1];
 	GetFileNameNoExtension(FileNameNoExt, CurrentGamePath);
 	sprintf(ForGame, "%s", FileNameNoExt);
-	PrintStringOutline(ForGame, COLOR_TITLE_TEXT, COLOR_TITLE_OUTLINE, OutputSurface->pixels, OutputSurface->pitch, 24, GetRenderedHeight(" ") + 4, GCW0_SCREEN_WIDTH - 48, GetRenderedHeight(" ") + 2, CENTER, TOP);
+	PrintStringOutline(ForGame, COLOR_TITLE_TEXT, COLOR_TITLE_OUTLINE, OutputSurface->pixels, OutputSurface->pitch, 0, 0, GCW0_SCREEN_WIDTH, GCW0_SCREEN_HEIGHT, CENTER, TOP);
 }
 
 void DefaultLoadFunction(struct MenuEntry* ActiveMenuEntry, char* Value)
@@ -1522,7 +1522,7 @@ struct Menu MainMenu = {
 static struct Menu SettingsMenu = {
 	.Parent = &MainMenu, .Title = "Settings",
 	.AlternateVersion = &PerGameMainMenu,
-	.Entries = { &MainMenu_Display, &MainMenu_Input, &MainMenu_Hotkey, &Strut, &PerGame_Settings, &Strut, &MainMenu_Debug, NULL }
+	.Entries = { &MainMenu_Display, &MainMenu_Input, &MainMenu_Hotkey, &Strut, &MainMenu_Debug, NULL }
 };
 
 /* Do not make this the active menu */
