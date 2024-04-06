@@ -1426,7 +1426,7 @@ static struct MenuEntry SavedStateMenu_Read = {
 };
 
 static struct MenuEntry SavedStateMenu_Write = {
-	.Kind = KIND_CUSTOM, .Name = "Save state",
+	.Kind = KIND_CUSTOM, .Name = "保存状态",
 	.ButtonEnterFunction = ActionSavedStateWrite,
 	.PersistentName = "",
 	.Target = &SelectedState,
