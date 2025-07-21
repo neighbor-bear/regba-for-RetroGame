@@ -24,11 +24,12 @@ jobs:
     - name: Setup RetroFW toolchain
       run: |
         sudo mkdir -p /opt
-        wget https://github.com/retrofw/retrofw-toolchain/releases/download/v2.2.2/retrofw-toolchain-mipsel-2018.08.09.tar.bz2
-        sudo tar -xjf retrofw-toolchain-mipsel-2018.08.09.tar.bz2 -C /opt
-        rm retrofw-toolchain-mipsel-2018.08.09.tar.bz2
-        # 创建符号链接以匹配Makefile中的路径
-        sudo ln -s /opt/mipsel-RetroFW-linux-uclibc-2018.08.09 /opt/mipsel-RetroFW-linux-uclibc
+        # 使用更新的工具链链接
+        wget https://github.com/retrofw/buildroot/releases/download/2021.01.14/retrofw-toolchain-mipsel-2021.01.14.tar.bz2
+        sudo tar -xjf retrofw-toolchain-mipsel-2021.01.14.tar.bz2 -C /opt
+        rm retrofw-toolchain-mipsel-2021.01.14.tar.bz2
+        # 创建必要的符号链接
+        sudo ln -s /opt/mipsel-RetroFW-linux-uclibc-2021.01.14 /opt/mipsel-RetroFW-linux-uclibc
         echo "/opt/mipsel-RetroFW-linux-uclibc/usr/bin" >> $GITHUB_PATH
 
     - name: Build ReGBA
@@ -38,7 +39,7 @@ jobs:
         make ipk
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4  # 更新到v4版本
+      uses: actions/upload-artifact@v4
       with:
         name: regba-build
         path: |
