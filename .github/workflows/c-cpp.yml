@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
-        fetch-depth: 0  # Required for git describe
+        fetch-depth: 0
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential git bzip2 libsdl1.2-dev libpng-dev zlib1g-dev
+        sudo apt-get install -y build-essential git bzip2 libsdl1.2-dev libpng-dev zlib1g-dev squashfs-tools
 
     - name: Setup RetroFW toolchain
       run: |
@@ -27,6 +27,8 @@ jobs:
         wget https://github.com/retrofw/retrofw-toolchain/releases/download/v2.2.2/retrofw-toolchain-mipsel-2018.08.09.tar.bz2
         sudo tar -xjf retrofw-toolchain-mipsel-2018.08.09.tar.bz2 -C /opt
         rm retrofw-toolchain-mipsel-2018.08.09.tar.bz2
+        # 创建符号链接以匹配Makefile中的路径
+        sudo ln -s /opt/mipsel-RetroFW-linux-uclibc-2018.08.09 /opt/mipsel-RetroFW-linux-uclibc
         echo "/opt/mipsel-RetroFW-linux-uclibc/usr/bin" >> $GITHUB_PATH
 
     - name: Build ReGBA
@@ -36,7 +38,7 @@ jobs:
         make ipk
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # 更新到v4版本
       with:
         name: regba-build
         path: |
