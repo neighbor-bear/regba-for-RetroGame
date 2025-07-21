@@ -25,7 +25,7 @@ jobs:
       run: |
         sudo mkdir -p /opt
         # 使用更新的工具链链接
-        wget https://github.com/retrofw/buildroot/releases/download/2021.01.14/retrofw-toolchain-mipsel-2021.01.14.tar.bz2
+        wget https://github.com/retrofw/buildroot/releases/download/2018.02.11/mipsel-linux-uclibc_x64.tar.gz
         sudo tar -xjf retrofw-toolchain-mipsel-2021.01.14.tar.bz2 -C /opt
         rm retrofw-toolchain-mipsel-2021.01.14.tar.bz2
         # 创建必要的符号链接
