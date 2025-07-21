@@ -1,16 +1,46 @@
-name: C/C++ CI
+name: ReGBA for RetroFW Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0  # Required for git describe
 
-    runs-on: ubuntu-latest  
-    steps:  
-    - uses: actions/checkout@v2  
-    - name: Build and Package  
-      run: make package
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential git bzip2 libsdl1.2-dev libpng-dev zlib1g-dev
+
+    - name: Setup RetroFW toolchain
+      run: |
+        sudo mkdir -p /opt
+        wget https://github.com/retrofw/retrofw-toolchain/releases/download/v2.2.2/retrofw-toolchain-mipsel-2018.08.09.tar.bz2
+        sudo tar -xjf retrofw-toolchain-mipsel-2018.08.09.tar.bz2 -C /opt
+        rm retrofw-toolchain-mipsel-2018.08.09.tar.bz2
+        echo "/opt/mipsel-RetroFW-linux-uclibc/usr/bin" >> $GITHUB_PATH
+
+    - name: Build ReGBA
+      run: |
+        make -j$(nproc)
+        make opk
+        make ipk
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: regba-build
+        path: |
+          regba/regba.opk
+          regba/regba.ipk
+          regba/regba.dge
+          regba/regba.elf
